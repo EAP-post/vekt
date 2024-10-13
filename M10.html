@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slankeplan for Mai Meesat</title>
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f7fafc;
+            padding: 20px;
+            line-height: 1.6;
+            max-width: 1200px;
+            margin: auto;
+            color: #333;
+        }
+
+        h1, h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        /* Minimalistisk header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 20px;
+            margin-bottom: 40px;
+            border-bottom: 2px solid #3498db;
+        }
+
+        .header .left-text {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .header .middle-text {
+            font-size: 22px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .info-line {
+            background-color: #d1f0d1;
+            padding: 10px;
+            border-left: 4px solid #27ae60;
+            font-size: 16px;
+            margin-bottom: 30px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        /* Knapper */
+        .save-button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-left: 15px;
+            transition: background-color 0.3s ease;
+        }
+
+        .save-button:hover {
+            background-color: #2980b9;
+        }
+
+        /* Nullstill-knapp i svakere grå farge */
+        .reset-button {
+            background-color: #bdc3c7;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-left: 10px;
+            transition: background-color 0.3s ease;
+        }
+
+        .reset-button:hover {
+            background-color: #95a5a6;
+        }
+
+        /* Sjekklisten */
+        .checklist {
+            margin: 20px 0;
+        }
+
+        .checklist input {
+            margin-right: 10px;
+        }
+
+        .section-title {
+            font-weight: bold;
+            margin-top: 20px;
+            color: #2c3e50;
+            font-size: 18px;
+        }
+
+        /* Organisering av horisontal layout */
+        .horizontal-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .horizontal-group label {
+            display: flex;
+            align-items: center;
+            padding: 8px 10px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 10px;
+            flex: 1;
+            min-width: 120px;
+            justify-content: center;
+            transition: background-color 0.3s ease;
+        }
+
+        .horizontal-group label:hover {
+            background-color: #f0f0f0;
+        }
+
+        /* Sunne valg i grønt */
+        .green {
+            color: green;
+            font-weight: bold;
+        }
+
+        /* Usunne valg i rødt */
+        .red {
+            color: red;
+            font-weight: bold;
+        }
+
+        /* Registrering av vekt */
+        .weight-input {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .weight-input input {
+            width: 100px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            margin: 10px 0;
+        }
+
+        /* Graf styling */
+        #myChart {
+            max-width: 100%;
+            margin: 30px auto;
+        }
+
+        /* Media queries for mobiltilpasning */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .header .left-text, .header .middle-text {
+                font-size: 18px;
+            }
+
+            .save-button {
+                font-size: 14px;
+                padding: 8px 15px;
+            }
+
+            .horizontal-group label {
+                font-size: 14px;
+                min-width: 100px;
+            }
+
+            .section-title {
+                font-size: 16px;
+            }
+
+            .weight-input input {
+                width: 80px;
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .horizontal-group {
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            .horizontal-group label {
+                min-width: 100%;
+                font-size: 14px;
+            }
+
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .save-button {
+                align-self: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Øverst med tittel og lagringsknapp -->
+    <div class="header">
+        <div class="left-text">Slankeplan for Mai Meesat</div>
+        <div class="middle-text">Daglig sjekkliste</div>
+        <button class="save-button" id="save-plan">Lagre Plan</button>
+    </div>
+
+    <!-- Motivational line -->
+    <div class="info-line">
+        Mai veier 70 kilo i dag, 16. oktober 2024. Hvis hun klarer å gå ned 6 kilo innen 20. november 2024, vinner hun 10.000 kr!
+    </div>
+
+    <!-- Frokost valg -->
+    <div class="checklist">
+        <div class="section-title">Frokost</div>
+        <div class="horizontal-group">
+            <label class="green"><input type="checkbox" id="egg"> Egg</label>
+            <label class="green"><input type="checkbox" id="grot"> Grøt</label>
+            <label class="green"><input type="checkbox" id="salat"> Salat</label>
+            <label class="green"><input type="checkbox" id="havregryn"> Havregryn</label>
+            <label class="green"><input type="checkbox" id="yoghurt"> Yoghurt</label>
+            <label class="green"><input type="checkbox" id="avocado"> Avocado</label>
+            <label class="green"><input type="checkbox" id="bonner"> Bønner</label>
+        </div>
+        <div class="horizontal-group">
+            <label class="red"><input type="checkbox" id="brod"> Brød</label>
+            <label class="red"><input type="checkbox" id="bakeverk"> Bakeverk</label>
+            <label class="red"><input type="checkbox" id="bacon"> Bacon</label>
+            <label class="red"><input type="checkbox" id="frityrstekt"> Frityrstekt mat</label>
+            <label class="red"><input type="checkbox" id="sukkerholdig-drikke"> Sukkerholdig drikke</label>
+        </div>
+    </div>
+
+    <!-- Lunsj valg -->
+    <div class="checklist">
+        <div class="section-title">Lunsj</div>
+        <div class="horizontal-group">
+            <label class="green"><input type="checkbox" id="salat-lunsj"> Salat</label>
+            <label class="green"><input type="checkbox" id="ris-lunsj"> Ris</label>
+            <label class="green"><input type="checkbox" id="omelett"> Omelett</label>
+            <label class="green"><input type="checkbox" id="kylling-lunsj"> Kylling</label>
+            <label class="green"><input type="checkbox" id="svin-lunsj"> Svin</label>
+            <label class="green"><input type="checkbox" id="fisk-lunsj"> Fisk</label>
+            <label class="green"><input type="checkbox" id="gronnsaker-lunsj"> Grønnsaker</label>
+        </div>
+        <div class="horizontal-group">
+            <label class="red"><input type="checkbox" id="brod-lunsj"> Brød</label>
+            <label class="red"><input type="checkbox" id="kebab"> Kebab</label>
+            <label class="red"><input type="checkbox" id="ferdigmat"> Ferdigmat</label>
+            <label class="red"><input type="checkbox" id="frukt-lunsj"> Frukt</label>
+            <label class="red"><input type="checkbox" id="juice-lunsj"> Juice</label>
+            <label class="red"><input type="checkbox" id="energidrikk"> Energidrikk</label>
+        </div>
+    </div>
+
+    <!-- Middag valg -->
+    <div class="checklist">
+        <div class="section-title">Middag</div>
+        <div class="horizontal-group">
+            <label class="green"><input type="checkbox" id="kjott"> Kjøtt</label>
+            <label class="green"><input type="checkbox" id="fisk"> Fisk</label>
+            <label class="green"><input type="checkbox" id="papaya-salat"> Papaya salat</label>
+            <label class="green"><input type="checkbox" id="egg-middag"> Egg</label>
+            <label class="green"><input type="checkbox" id="gronnsaker"> Grønnsaker</label>
+            <label class="green"><input type="checkbox" id="nudler"> Nudler</label>
+            <label class="green"><input type="checkbox" id="urter"> Urter</label>
+            <label class="green"><input type="checkbox" id="supper"> Supper</label>
+        </div>
+
+        <!-- Usunne valg i rødt -->
+        <div class="horizontal-group">
+            <label class="red"><input type="checkbox" id="frityr"> Frityr mat</label>
+            <label class="red"><input type="checkbox" id="sideflesk"> Sideflesk</label>
+            <label class="red"><input type="checkbox" id="fastfood"> Fastfood</label>
+        </div>
+    </div>
+
+    <!-- Drikke og drikkevaner -->
+    <div class="checklist">
+        <div class="section-title">Drikke</div>
+        <div class="horizontal-group">
+            <label class="green"><input type="checkbox" id="vann"> Vann</label>
+            <label class="red"><input type="checkbox" id="kaffe-sukker"> Kaffe med sukker</label>
+            <label class="red"><input type="checkbox" id="juice"> Juice</label>
+            <label class="red"><input type="checkbox" id="brus-sukker"> Brus med sukker</label>
+        </div>
+    </div>
+
+    <!-- Trening valg -->
+    <div class="checklist">
+        <div class="section-title">Trening</div>
+        <div class="horizontal-group">
+            <label><input type="checkbox" id="svomme-lengder"> Svømme 8 lengder</label>
+            <label><input type="checkbox" id="sportswalk30"> Sportswalk 30 min</label>
+            <label><input type="checkbox" id="knebøy10"> Knebøy 10 rep</label>
+            <label><input type="checkbox" id="overkropp10"> Overkropp 10 rep</label>
+            <label><input type="checkbox" id="mage10"> Mage 10 rep</label>
+        </div>
+    </div>
+
+    <!-- Registrering av vekt -->
+    <div class="weight-input">
+        <div class="section-title">Registrer vekt</div>
+        <input type="number" id="vekt" placeholder="kg" step="0.1">
+        <button class="save-button" onclick="registrerVektOgTrening()">Registrer</button>
+        <button class="reset-button" onclick="nullstillData()">Nullstill data</button>
+
+        <div id="vekthistorikk" class="saved-weight"></div>
+        <div id="treningshistorikk" class="saved-training"></div>
+    </div>
+
+    <!-- Graf for vektendringer -->
+    <canvas id="myChart"></canvas>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Funksjon for å registrere dagens vekt og trening
+        function registrerVektOgTrening() {
+            let dagensVekt = document.getElementById("vekt").value;
+            let dagensDato = new Date().toLocaleDateString();
+            
+            // Lagre vekt
+            if (dagensVekt) {
+                let vekthistorikk = localStorage.getItem("vekthistorikk") || "";
+                let nyVektData = `Dato: ${dagensDato}, Vekt: ${dagensVekt} kg<br>`;
+                vekthistorikk += nyVektData;
+                localStorage.setItem("vekthistorikk", vekthistorikk);
+            }
+
+            // Lagre trening
+            let trening = "";
+            if (document.getElementById("svomme-lengder").checked) trening += "Svømme 8 lengder, ";
+            if (document.getElementById("sportswalk30").checked) trening += "Sportswalk 30 min, ";
+            if (document.getElementById("knebøy10").checked) trening += "Knebøy 10 rep, ";
+            if (document.getElementById("overkropp10").checked) trening += "Overkropp 10 rep, ";
+            if (document.getElementById("mage10").checked) trening += "Mage 10 rep, ";
+            
+            if (trening) {
+                let treningshistorikk = localStorage.getItem("treningshistorikk") || "";
+                let nyTreningsData = `Dato: ${dagensDato}, Trening: ${trening.slice(0, -2)}<br>`;
+                treningshistorikk += nyTreningsData;
+                localStorage.setItem("treningshistorikk", treningshistorikk);
+            }
+
+            visVekthistorikkOgTreningshistorikk();
+            oppdaterGraf();  // Oppdater grafen etter lagring
+        }
+
+        // Funksjon for å vise vekthistorikk og treningshistorikk
+        function visVekthistorikkOgTreningshistorikk() {
+            let vekthistorikk = localStorage.getItem("vekthistorikk") || "Ingen vekt registrert ennå.";
+            document.getElementById("vekthistorikk").innerHTML = vekthistorikk;
+
+            let treningshistorikk = localStorage.getItem("treningshistorikk") || "Ingen trening registrert ennå.";
+            document.getElementById("treningshistorikk").innerHTML = treningshistorikk;
+        }
+
+        // Funksjon for å nullstille lagret data
+        function nullstillData() {
+            localStorage.removeItem("vekthistorikk");
+            localStorage.removeItem("treningshistorikk");
+            document.getElementById("vekthistorikk").innerHTML = "Ingen vekt registrert ennå.";
+            document.getElementById("treningshistorikk").innerHTML = "Ingen trening registrert ennå.";
+        }
+
+        // Funksjon for å tegne grafen
+        function oppdaterGraf() {
+            let vekthistorikk = localStorage.getItem("vekthistorikk") || "";
+            if (!vekthistorikk) return;
+
+            let vektData = [];
+            let datoData = [];
+
+            let linjer = vekthistorikk.split("<br>");
+            linjer.forEach(linje => {
+                if (linje) {
+                    let deler = linje.split(", Vekt: ");
+                    let dato = deler[0].replace("Dato: ", "");
+                    let vekt = parseFloat(deler[1].replace(" kg", ""));
+                    datoData.push(dato);
+                    vektData.push(vekt);
+                }
+            });
+
+            // Tegn grafen med Chart.js
+            const ctx = document.getElementById('myChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: datoData,
+                    datasets: [{
+                        label: 'Vekt over tid',
+                        data: vektData,
+                        borderColor: '#3498db',
+                        fill: false,
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Dato'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Vekt (kg)'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Kjør denne funksjonen når siden lastes inn for å vise lagret data og grafen
+        visVekthistorikkOgTreningshistorikk();
+        oppdaterGraf();
+    </script>
+
+</body>
+</html>
